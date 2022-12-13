@@ -1,4 +1,10 @@
-go-mux-api.bin
+smarket.bin
 mod/
 vendor/
+.env
+.idea/
+.vscode/
+.DS_Store
+__debug_bin/
+etc/config.yaml
 .env

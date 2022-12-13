@@ -10,8 +10,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/TomFern/go-mux-api/models"
-	"github.com/TomFern/go-mux-api/utils"
+	"github.com/Surdy-A/SMarket/models"
+	"github.com/Surdy-A/SMarket/utils"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 )
@@ -151,7 +151,6 @@ func (a *App) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 
 	utils.RespondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
 }
-
 
 // Blog Handlers
 func (a *App) CreateArticle(w http.ResponseWriter, r *http.Request) {

@@ -20,9 +20,9 @@ func (b *Article) CreateArticle(db *sql.DB) error {
 	b.UpdatedDate = time.Now()
 
 	err := db.QueryRow(
-		`INSERT INTO articles (id, title, article, image, created_date, updated_date) 
-		VALUES($1, $2, $3, $4, $5, $6) RETURNING id`,
-		b.ID, b.Title, b.Article, b.Image, b.CreatedDate, b.UpdatedDate).Scan(&b.ID)
+		`INSERT INTO articles(title, article, image, created_date, updated_date) 
+		VALUES($1, $2, $3, $4, $5) RETURNING id`,
+		b.Title, b.Article, b.Image, b.CreatedDate, b.UpdatedDate).Scan(&b.ID)
 
 	if err != nil {
 		return err

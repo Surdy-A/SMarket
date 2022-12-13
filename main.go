@@ -1,16 +1,25 @@
 // main.go
-
 package main
 
+import (
+	"os"
+
+	"github.com/joho/godotenv"
+)
+
 func main() {
+	godotenv.Load(".env")
+
 	a := App{}
-	// os.Getenv("APP_DB_USERNAME"),
-	// 	os.Getenv("APP_DB_PASSWORD"),
-	// 	os.Getenv("APP_DB_NAME")
+
+	username := os.Getenv("APP_DB_USERNAME")
+	password := os.Getenv("APP_DB_PASSWORD")
+	db_name := os.Getenv("APP_DB_NAME")
+
 	a.Initialize(
-		"postgres",
-		"Goodman8349**",
-		"smarket",
+		username,
+		password,
+		db_name,
 	)
 
 	a.Run(":8010")
