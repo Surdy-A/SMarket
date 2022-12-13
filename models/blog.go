@@ -51,3 +51,8 @@ func (b *Article) GetArticles(db *sql.DB) ([]Article, error) {
 	}
 	return blogs, nil
 }
+
+func (b *Article) GetArticle(db *sql.DB, id int) error {
+	return db.QueryRow("SELECT * FROM Articles WHERE id=$1",
+		id).Scan(&b.ID, &b.Title, &b.Article, &b.Image, &b.CreatedDate, &b.UpdatedDate)
+}
