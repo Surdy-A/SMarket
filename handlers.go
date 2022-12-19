@@ -234,3 +234,25 @@ func (a *App) UpdateArticle(w http.ResponseWriter, r *http.Request) {
 
 	utils.RespondWithJSON(w, http.StatusOK, ar)
 }
+
+func (a *App) DeleteArticle(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid Article ID")
+		return
+	}
+
+	ar := models.Article{ID: id}
+	if err := ar.GetArticle(a.DB, id); err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := ar.DeleteArticle(a.DB); err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	utils.RespondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+}

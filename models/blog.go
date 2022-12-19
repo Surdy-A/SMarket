@@ -65,3 +65,9 @@ func (b *Article) UpdateArticle(db *sql.DB) error {
 
 	return err
 }
+
+func (p *Article) DeleteArticle(db *sql.DB) error {
+	_, err := db.Exec("DELETE FROM articles WHERE id=$1", p.ID)
+
+	return err
+}
