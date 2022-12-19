@@ -10,7 +10,7 @@ func (a *App) initializeRoutes() {
 	//Blog Routes
 	a.Router.HandleFunc("/article", a.CreateArticle).Methods("POST")
 	a.Router.HandleFunc("/articles", a.GetArticles).Methods("GET")
-	// a.Router.HandleFunc("/article/{id:[0-9]+}", a.GetArticle).Methods("GET")
-	// a.Router.HandleFunc("/article/{id:[0-9]+}", a.UpdateArticle).Methods("PUT")
+	a.Router.HandleFunc("/article/{id:[0-9]+}", a.GetArticle).Methods("GET")
+	a.Router.HandleFunc("/article/{id:[0-9]+}", a.UpdateArticle).Methods("PUT")
 	// a.Router.HandleFunc("/article/{id:[0-9]+}", a.DeleteArticle).Methods("DELETE")
 }

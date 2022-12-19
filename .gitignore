@@ -6,5 +6,7 @@ vendor/
 .vscode/
 .DS_Store
 __debug_bin/
+__debug_bin.exe
+
 etc/config.yaml
 .env
