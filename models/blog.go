@@ -56,3 +56,12 @@ func (b *Article) GetArticle(db *sql.DB, id int) error {
 	return db.QueryRow("SELECT * FROM Articles WHERE id=$1",
 		id).Scan(&b.ID, &b.Title, &b.Article, &b.Image, &b.CreatedDate, &b.UpdatedDate)
 }
+
+func (b *Article) UpdateArticle(db *sql.DB) error {
+	_, err :=
+		db.Exec(`UPDATE articles SET title=$1, article=$2, image=$3, created_date=$4, 
+			updated_date=$5 WHERE id=$6`,
+			&b.Title, &b.Article, &b.Image, &b.CreatedDate, &b.UpdatedDate, &b.ID)
+
+	return err
+}
