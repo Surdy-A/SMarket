@@ -117,7 +117,8 @@ func (a *App) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	p.ID = id
 
-	if err := p.GetProduct(a.DB, id); err != nil {
+	var product models.Product
+	if err := product.GetProduct(a.DB, id); err != nil {
 		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -201,4 +202,35 @@ func (a *App) GetArticle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.RespondWithJSON(w, http.StatusOK, p)
+}
+
+func (a *App) UpdateArticle(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid Article ID")
+		return
+	}
+
+	var ar models.Article
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&ar); err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid resquest payload")
+		return
+	}
+	defer r.Body.Close()
+	ar.ID = id
+
+	var article models.Article
+	if err := article.GetArticle(a.DB, id); err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := ar.UpdateArticle(a.DB); err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	utils.RespondWithJSON(w, http.StatusOK, ar)
 }
