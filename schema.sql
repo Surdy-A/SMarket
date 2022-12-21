@@ -25,3 +25,15 @@ CREATE TABLE Articles
     updated_date TIMESTAMP,
     CONSTRAINT articles_pkey PRIMARY KEY (id)
 );
+
+CREATE TABLE Vendors
+(
+    id SERIAL,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    phone TEXT,
+    address TEXT,
+    logo_url TEXT,
+    created_date TIMESTAMP,
+    CONSTRAINT vendors_pkey PRIMARY KEY (id)
+);

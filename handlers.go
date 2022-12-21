@@ -49,6 +49,9 @@ func (a *App) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
+	//Check If Vendor/Shop exist
+	//Check if Product Category or Brand exist
+	
 	if err := p.CreateProduct(a.DB); err != nil {
 		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -250,6 +253,110 @@ func (a *App) DeleteArticle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := ar.DeleteArticle(a.DB); err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	utils.RespondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+}
+
+// Vendor Handlers
+func (a *App) CreateVendor(w http.ResponseWriter, r *http.Request) {
+	var v models.Vendor
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&v); err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+	defer r.Body.Close()
+
+	if err := v.CreateVendor(a.DB); err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	utils.RespondWithJSON(w, http.StatusCreated, v)
+}
+
+func (a *App) GetVendors(w http.ResponseWriter, r *http.Request) {
+	var v models.Vendor
+	vendors, err := v.GetVendors(a.DB)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	utils.RespondWithJSON(w, http.StatusOK, vendors)
+}
+
+func (a *App) GetVendor(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid Vendor ID")
+		return
+	}
+
+	v := models.Vendor{ID: id}
+	if err := v.GetVendor(a.DB, id); err != nil {
+		switch err {
+		case sql.ErrNoRows:
+			utils.RespondWithError(w, http.StatusNotFound, "Vendor not found")
+		default:
+			utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		}
+		return
+	}
+
+	utils.RespondWithJSON(w, http.StatusOK, v)
+}
+
+func (a *App) UpdateVendor(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid Vendor ID")
+		return
+	}
+
+	var v models.Vendor
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&v); err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid resquest payload")
+		return
+	}
+	defer r.Body.Close()
+	v.ID = id
+
+	var vendor models.Vendor
+	if err := vendor.GetVendor(a.DB, id); err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := v.UpdateVendor(a.DB); err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	utils.RespondWithJSON(w, http.StatusOK, v)
+}
+
+func (a *App) DeleteVendor(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid Vendor ID")
+		return
+	}
+
+	v := models.Vendor{ID: id}
+	if err := v.GetVendor(a.DB, id); err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := v.DeleteVendor(a.DB); err != nil {
 		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}

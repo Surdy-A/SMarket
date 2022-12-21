@@ -13,4 +13,11 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/article/{id:[0-9]+}", a.GetArticle).Methods("GET")
 	a.Router.HandleFunc("/article/{id:[0-9]+}", a.UpdateArticle).Methods("PUT")
 	a.Router.HandleFunc("/article/{id:[0-9]+}", a.DeleteArticle).Methods("DELETE")
+
+	//Vendor Routes
+	a.Router.HandleFunc("/vendor", a.CreateVendor).Methods("POST")
+	a.Router.HandleFunc("/vendors", a.GetVendors).Methods("GET")
+	a.Router.HandleFunc("/vendor/{id:[0-9]+}", a.GetVendor).Methods("GET")
+	a.Router.HandleFunc("/vendor/{id:[0-9]+}", a.UpdateVendor).Methods("PUT")
+	a.Router.HandleFunc("/vendor/{id:[0-9]+}", a.DeleteVendor).Methods("DELETE")
 }
