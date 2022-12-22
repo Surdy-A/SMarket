@@ -19,6 +19,9 @@ type Product struct {
 	Star         []int64  `json:"star"`
 	Labels       []string `json:"labels"`
 	Discount     float64  `json:"discount"`
+	//Todo
+	//1. Category  Add Product Category
+	//2. Add Product Brands  []string `json:"brands"`
 }
 
 func (p *Product) ProductDiscount(percent float64) *float64 {
