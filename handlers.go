@@ -51,7 +51,23 @@ func (a *App) CreateProduct(w http.ResponseWriter, r *http.Request) {
 
 	//Check If Vendor/Shop exist
 	//Check if Product Category or Brand exist
-	
+	var v models.Vendor
+	err := v.GetVendor(a.DB, p.ID)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, "venor doesn't exist")
+	}
+	cat, err := p.Categories.GetCategories(a.DB)
+	for _, c := range cat {
+		if c.MainCategory != p.Categories.MainCategory {
+			utils.RespondWithError(w, http.StatusBadRequest, "Product Category doesn't exist")
+			return
+		}
+	}
+	fmt.Println(cat)
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	if err := p.CreateProduct(a.DB); err != nil {
 		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -291,11 +307,7 @@ func (a *App) GetVendors(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) GetVendor(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "Invalid Vendor ID")
-		return
-	}
+	id := vars["id"]
 
 	v := models.Vendor{ID: id}
 	if err := v.GetVendor(a.DB, id); err != nil {
@@ -313,11 +325,7 @@ func (a *App) GetVendor(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) UpdateVendor(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "Invalid Vendor ID")
-		return
-	}
+	id := vars["id"]
 
 	var v models.Vendor
 	decoder := json.NewDecoder(r.Body)
@@ -344,11 +352,7 @@ func (a *App) UpdateVendor(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) DeleteVendor(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "Invalid Vendor ID")
-		return
-	}
+	id := vars["id"]
 
 	v := models.Vendor{ID: id}
 	if err := v.GetVendor(a.DB, id); err != nil {
@@ -357,6 +361,111 @@ func (a *App) DeleteVendor(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := v.DeleteVendor(a.DB); err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	utils.RespondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+}
+
+// Category Handlers
+// Vendor Handlers
+func (a *App) CreateCategory(w http.ResponseWriter, r *http.Request) {
+	var c models.Category
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&c); err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+	defer r.Body.Close()
+
+	if err := c.CreateCategory(a.DB); err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	utils.RespondWithJSON(w, http.StatusCreated, c)
+}
+
+func (a *App) GetCategories(w http.ResponseWriter, r *http.Request) {
+	var c models.Category
+	vendors, err := c.GetCategories(a.DB)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	utils.RespondWithJSON(w, http.StatusOK, vendors)
+}
+
+func (a *App) GetCategory(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid Category ID")
+		return
+	}
+
+	c := models.Category{ID: id}
+	if err := c.GetCategory(a.DB, id); err != nil {
+		switch err {
+		case sql.ErrNoRows:
+			utils.RespondWithError(w, http.StatusNotFound, "Product Catgeory not found")
+		default:
+			utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		}
+		return
+	}
+
+	utils.RespondWithJSON(w, http.StatusOK, c)
+}
+
+func (a *App) UpdateCategory(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid Product Category ID")
+		return
+	}
+
+	var c models.Category
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&c); err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid resquest payload")
+		return
+	}
+	defer r.Body.Close()
+	c.ID = id
+
+	var category models.Category
+	if err := category.GetCategory(a.DB, id); err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := c.UpdateCategory(a.DB); err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	utils.RespondWithJSON(w, http.StatusOK, c)
+}
+
+func (a *App) DeleteCategory(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid Product Category ID")
+		return
+	}
+
+	c := models.Category{ID: id}
+	if err := c.GetCategory(a.DB, id); err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := c.DeleteCategory(a.DB); err != nil {
 		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}

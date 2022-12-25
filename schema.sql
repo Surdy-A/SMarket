@@ -12,6 +12,8 @@ CREATE TABLE products
     labels TEXT [],
     discount NUMERIC(10,2) DEFAULT 0.00,
     price NUMERIC(10,2) NOT NULL DEFAULT 0.00,
+    brands TEXT [],
+    categories JSONB,
     CONSTRAINT products_pkey PRIMARY KEY (id)
 );
 
@@ -28,12 +30,32 @@ CREATE TABLE Articles
 
 CREATE TABLE Vendors
 (
-    id SERIAL,
+    id TEXT,
     name TEXT NOT NULL,
     email TEXT NOT NULL,
     phone TEXT,
     address TEXT,
     logo_url TEXT,
     created_date TIMESTAMP,
+    updated_date TIMESTAMP,
     CONSTRAINT vendors_pkey PRIMARY KEY (id)
 );
+
+CREATE TABLE Categories
+(
+    id SERIAL,
+    main_category TEXT NOT NULL,
+    sub_category TEXT,
+    CONSTRAINT category_pkey PRIMARY KEY (id)
+);
+
+
+CREATE FUNCTION
+    on_createddate_update()
+RETURNS
+    TRIGGER LANGUAGE plpgsql AS $$
+BEGIN
+    NEW.updated_date := NOW();
+    RETURN NEW;
+END;
+$$
