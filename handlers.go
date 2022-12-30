@@ -1,5 +1,3 @@
-// app.go
-
 package main
 
 import (
@@ -33,7 +31,7 @@ func (a *App) Initialize(user, password, dbname string) {
 
 	a.Router = mux.NewRouter()
 
-	a.initializeRoutes()
+	a.InitializeRoutes()
 }
 
 func (a *App) Run(addr string) {
@@ -42,30 +40,32 @@ func (a *App) Run(addr string) {
 
 func (a *App) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	var p models.Product
+
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&p); err != nil {
 		utils.RespondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
+
 	defer r.Body.Close()
 
-	//Check If Vendor/Shop exist
-	//Check if Product Category or Brand exist
+	vars := mux.Vars(r)
+	product_category_id := vars["category_id"]
+
+	err := p.Categories.GetCategory(a.DB, product_category_id)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, "product category doesn't exist")
+		return
+	}
+
 	var v models.Vendor
-	err := v.GetVendor(a.DB, p.ID)
+	vendor_id := vars["vendor_id"]
+
+	err = v.GetVendor(a.DB, vendor_id)
+
 	if err != nil {
 		utils.RespondWithError(w, http.StatusBadRequest, "venor doesn't exist")
-	}
-	cat, err := p.Categories.GetCategories(a.DB)
-	for _, c := range cat {
-		if c.MainCategory != p.Categories.MainCategory {
-			utils.RespondWithError(w, http.StatusBadRequest, "Product Category doesn't exist")
-			return
-		}
-	}
-	fmt.Println(cat)
-	if err != nil {
-		fmt.Println(err)
+		return
 	}
 
 	if err := p.CreateProduct(a.DB); err != nil {
@@ -99,11 +99,7 @@ func (a *App) GetProducts(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) GetProduct(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "Invalid product ID")
-		return
-	}
+	id := vars["id"]
 
 	p := models.Product{ID: id}
 	if err := p.GetProduct(a.DB, id); err != nil {
@@ -121,11 +117,8 @@ func (a *App) GetProduct(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "Invalid product ID")
-		return
-	}
+	id := vars["id"]
+	product_category_id := vars["id"]
 
 	var p models.Product
 	decoder := json.NewDecoder(r.Body)
@@ -135,6 +128,13 @@ func (a *App) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 	p.ID = id
+	product_category_id = vars["category_id"]
+
+	err := p.Categories.GetCategory(a.DB, product_category_id)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, "product category doesn't exist")
+		return
+	}
 
 	var product models.Product
 	if err := product.GetProduct(a.DB, id); err != nil {
@@ -152,11 +152,7 @@ func (a *App) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "Invalid Product ID")
-		return
-	}
+	id := vars["id"]
 
 	p := models.Product{ID: id}
 	if err := p.GetProduct(a.DB, id); err != nil {
@@ -400,11 +396,7 @@ func (a *App) GetCategories(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) GetCategory(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "Invalid Category ID")
-		return
-	}
+	id := vars["id"]
 
 	c := models.Category{ID: id}
 	if err := c.GetCategory(a.DB, id); err != nil {
@@ -422,11 +414,7 @@ func (a *App) GetCategory(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) UpdateCategory(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "Invalid Product Category ID")
-		return
-	}
+	id := vars["id"]
 
 	var c models.Category
 	decoder := json.NewDecoder(r.Body)
@@ -453,11 +441,7 @@ func (a *App) UpdateCategory(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) DeleteCategory(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "Invalid Product Category ID")
-		return
-	}
+	id := vars["id"]
 
 	c := models.Category{ID: id}
 	if err := c.GetCategory(a.DB, id); err != nil {

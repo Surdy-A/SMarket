@@ -53,8 +53,10 @@ func (b *Article) GetArticles(db *sql.DB) ([]Article, error) {
 }
 
 func (b *Article) GetArticle(db *sql.DB, id int) error {
+	b.UpdatedDate = time.Now()
+
 	return db.QueryRow("SELECT * FROM Articles WHERE id=$1",
-		id).Scan(&b.ID, &b.Title, &b.Article, &b.Image, &b.CreatedDate, &b.UpdatedDate)
+		id).Scan(&b.ID, &b.Title, &b.Article, &b.Image, &b.UpdatedDate)
 }
 
 func (b *Article) UpdateArticle(db *sql.DB) error {

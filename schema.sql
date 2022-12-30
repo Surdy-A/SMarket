@@ -1,6 +1,6 @@
 CREATE TABLE products
 (
-    id SERIAL,
+    id TEXT,
     name TEXT NOT NULL,
     image TEXT,
     details TEXT,
@@ -14,6 +14,8 @@ CREATE TABLE products
     price NUMERIC(10,2) NOT NULL DEFAULT 0.00,
     brands TEXT [],
     categories JSONB,
+    created_date TIMESTAMP,
+    updated_date TIMESTAMP,
     CONSTRAINT products_pkey PRIMARY KEY (id)
 );
 
@@ -43,7 +45,7 @@ CREATE TABLE Vendors
 
 CREATE TABLE Categories
 (
-    id SERIAL,
+    id TEXT,
     main_category TEXT NOT NULL,
     sub_category TEXT,
     CONSTRAINT category_pkey PRIMARY KEY (id)

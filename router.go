@@ -1,11 +1,11 @@
 package main
 
-func (a *App) initializeRoutes() {
-	a.Router.HandleFunc("/product", a.CreateProduct).Methods("POST")
+func (a *App) InitializeRoutes() {
+	a.Router.HandleFunc("/product/{category_id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}/{vendor_id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}", a.CreateProduct).Methods("POST")
 	a.Router.HandleFunc("/products", a.GetProducts).Methods("GET")
-	a.Router.HandleFunc("/product/{id:[0-9]+}", a.GetProduct).Methods("GET")
-	a.Router.HandleFunc("/product/{id:[0-9]+}", a.UpdateProduct).Methods("PUT")
-	a.Router.HandleFunc("/product/{id:[0-9]+}", a.DeleteProduct).Methods("DELETE")
+	a.Router.HandleFunc("/product/{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}", a.GetProduct).Methods("GET")
+	a.Router.HandleFunc("/product/{category_id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}/{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}", a.UpdateProduct).Methods("PUT")
+	a.Router.HandleFunc("/product/{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}", a.DeleteProduct).Methods("DELETE")
 
 	//Blog Routes
 	a.Router.HandleFunc("/article", a.CreateArticle).Methods("POST")

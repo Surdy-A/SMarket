@@ -2,18 +2,17 @@ package models
 
 import (
 	"database/sql"
+
+	"github.com/google/uuid"
 )
 
-// type Category struct {
-// 	ID           int    `json:"id"`
-// 	MainCategory string `json:"main_category"`
-// 	SubCategory  string `json:"sub_category"`
-// }
-
 func (c *Category) CreateCategory(db *sql.DB) error {
+	category_id := (uuid.New()).String()
+	c.ID = category_id
+
 	err := db.QueryRow(
-		"INSERT INTO categories(main_category, sub_category) VALUES($1, $2) RETURNING id",
-		c.MainCategory, c.SubCategory).Scan(&c.ID)
+		"INSERT INTO categories(id, main_category, sub_category) VALUES($1, $2, $3) RETURNING id",
+		category_id, c.MainCategory, c.SubCategory).Scan(&c.ID)
 
 	if err != nil {
 		return err
@@ -46,7 +45,7 @@ func (c *Category) GetCategories(db *sql.DB) ([]Category, error) {
 	return categories, nil
 }
 
-func (c *Category) GetCategory(db *sql.DB, id int) error {
+func (c *Category) GetCategory(db *sql.DB, id string) error {
 	return db.QueryRow("SELECT * FROM categories WHERE id=$1",
 		id).Scan(&c.ID, &c.MainCategory, &c.SubCategory)
 }
