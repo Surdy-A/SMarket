@@ -30,7 +30,6 @@ func (a *App) Initialize(user, password, dbname string) {
 	}
 
 	a.Router = mux.NewRouter()
-
 	a.InitializeRoutes()
 }
 

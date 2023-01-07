@@ -1,30 +1,38 @@
 package main
 
 func (a *App) InitializeRoutes() {
-	a.Router.HandleFunc("/product/{category_id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}/{vendor_id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}", a.CreateProduct).Methods("POST")
-	a.Router.HandleFunc("/products", a.GetProducts).Methods("GET")
-	a.Router.HandleFunc("/product/{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}", a.GetProduct).Methods("GET")
-	a.Router.HandleFunc("/product/{category_id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}/{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}", a.UpdateProduct).Methods("PUT")
-	a.Router.HandleFunc("/product/{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}", a.DeleteProduct).Methods("DELETE")
+	router := a.Router.PathPrefix("/api/v1").Subrouter()
+	router.HandleFunc("/product/{category_id}/{vendor_id}", a.CreateProduct).Methods("POST")
+	router.HandleFunc("/products", a.GetProducts).Methods("GET")
+	router.HandleFunc("/product/{id}", a.GetProduct).Methods("GET")
+	router.HandleFunc("/product/{id}/{category_id}", a.UpdateProduct).Methods("PUT")
+	router.HandleFunc("/product/{id}", a.DeleteProduct).Methods("DELETE")
 
 	//Blog Routes
-	a.Router.HandleFunc("/article", a.CreateArticle).Methods("POST")
-	a.Router.HandleFunc("/articles", a.GetArticles).Methods("GET")
-	a.Router.HandleFunc("/article/{id:[0-9]+}", a.GetArticle).Methods("GET")
-	a.Router.HandleFunc("/article/{id:[0-9]+}", a.UpdateArticle).Methods("PUT")
-	a.Router.HandleFunc("/article/{id:[0-9]+}", a.DeleteArticle).Methods("DELETE")
+	router.HandleFunc("/article", a.CreateArticle).Methods("POST")
+	router.HandleFunc("/articles", a.GetArticles).Methods("GET")
+	router.HandleFunc("/article/{id:[0-9]+}", a.GetArticle).Methods("GET")
+	router.HandleFunc("/article/{id:[0-9]+}", a.UpdateArticle).Methods("PUT")
+	router.HandleFunc("/article/{id:[0-9]+}", a.DeleteArticle).Methods("DELETE")
 
 	//Vendor Routes
-	a.Router.HandleFunc("/vendor", a.CreateVendor).Methods("POST")
-	a.Router.HandleFunc("/vendors", a.GetVendors).Methods("GET")
-	a.Router.HandleFunc("/vendor/{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}", a.GetVendor).Methods("GET")
-	a.Router.HandleFunc("/vendor/{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}", a.UpdateVendor).Methods("PUT")
-	a.Router.HandleFunc("/vendor/{id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}", a.DeleteVendor).Methods("DELETE")
+	router.HandleFunc("/vendor", a.CreateVendor).Methods("POST")
+	router.HandleFunc("/vendors", a.GetVendors).Methods("GET")
+	router.HandleFunc("/vendor/{id}", a.GetVendor).Methods("GET")
+	router.HandleFunc("/vendor/{id}", a.UpdateVendor).Methods("PUT")
+	router.HandleFunc("/vendor/{id}", a.DeleteVendor).Methods("DELETE")
 
-	//Category Routes
-	a.Router.HandleFunc("/category", a.CreateCategory).Methods("POST")
-	a.Router.HandleFunc("/categories", a.GetCategories).Methods("GET")
-	a.Router.HandleFunc("/category/{id:[0-9]+}", a.GetCategory).Methods("GET")
-	a.Router.HandleFunc("/category/{id:[0-9]+}", a.UpdateCategory).Methods("PUT")
-	a.Router.HandleFunc("/category/{id:[0-9]+}", a.DeleteCategory).Methods("DELETE")
+	//Product Category Routes
+	router.HandleFunc("/category", a.CreateCategory).Methods("POST")
+	router.HandleFunc("/categories", a.GetCategories).Methods("GET")
+	router.HandleFunc("/category/{id}", a.GetCategory).Methods("GET")
+	router.HandleFunc("/category/{id}", a.UpdateCategory).Methods("PUT")
+	router.HandleFunc("/category/{id}", a.DeleteCategory).Methods("DELETE")
+
+	//Article Category Routes
+	router.HandleFunc("article/category", a.CreateArticleCategory).Methods("POST")
+	router.HandleFunc("article/categories", a.GetArticleCategories).Methods("GET")
+	router.HandleFunc("article/category/{id}", a.GetArticleCategory).Methods("GET")
+	router.HandleFunc("article/category/{id}", a.UpdateArticleCategory).Methods("PUT")
+	router.HandleFunc("article/category/{id}", a.DeleteArticleCategory).Methods("DELETE")
 }
