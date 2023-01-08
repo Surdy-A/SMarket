@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 )
 
 func (b *BlogCategory) CreateArticleCategory(db *sql.DB) error {
@@ -12,7 +13,7 @@ func (b *BlogCategory) CreateArticleCategory(db *sql.DB) error {
 
 	err := db.QueryRow(
 		"INSERT INTO article_categories(id, article_category) VALUES($1, $2) RETURNING id",
-		category_id, b.ArticleCategory).Scan(&b.ID)
+		category_id, pq.Array(b.ArticleCategory)).Scan(&b.ID)
 
 	if err != nil {
 		return err
@@ -35,7 +36,7 @@ func (b *BlogCategory) GetArticleCategories(db *sql.DB) ([]BlogCategory, error) 
 
 	for rows.Next() {
 		var b BlogCategory
-		if err := rows.Scan(&b.ID, &b.ArticleCategory); err != nil {
+		if err := rows.Scan(&b.ID, pq.Array(&b.ArticleCategory)); err != nil {
 			return nil, err
 		}
 
@@ -47,13 +48,13 @@ func (b *BlogCategory) GetArticleCategories(db *sql.DB) ([]BlogCategory, error) 
 
 func (b *BlogCategory) GetArticleCategory(db *sql.DB, id string) error {
 	return db.QueryRow("SELECT * FROM article_categories WHERE id=$1",
-		id).Scan(&b.ID, &b.ArticleCategory)
+		id).Scan(&b.ID, pq.Array(&b.ArticleCategory))
 }
 
 func (b *BlogCategory) UpdateArticleCategory(db *sql.DB) error {
 	_, err :=
 		db.Exec(`UPDATE article_categories SET article_category=$1 WHERE id=$2`,
-			b.ArticleCategory, b.ID)
+			pq.Array(b.ArticleCategory), b.ID)
 
 	return err
 }

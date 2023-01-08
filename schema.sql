@@ -52,12 +52,9 @@ CREATE TABLE Categories
 );
 
 
-CREATE FUNCTION
-    on_createddate_update()
-RETURNS
-    TRIGGER LANGUAGE plpgsql AS $$
-BEGIN
-    NEW.updated_date := NOW();
-    RETURN NEW;
-END;
-$$
+CREATE TABLE Article_Categories
+(
+    id TEXT,
+    article_category TEXT [],
+    CONSTRAINT article_category_pkey PRIMARY KEY (id)
+);

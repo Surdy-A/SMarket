@@ -9,6 +9,7 @@ func (a *App) InitializeRoutes() {
 	router.HandleFunc("/product/{id}", a.DeleteProduct).Methods("DELETE")
 
 	//Blog Routes
+	//Todo: Add Blog Category check to handlers
 	router.HandleFunc("/article", a.CreateArticle).Methods("POST")
 	router.HandleFunc("/articles", a.GetArticles).Methods("GET")
 	router.HandleFunc("/article/{id:[0-9]+}", a.GetArticle).Methods("GET")
@@ -30,9 +31,9 @@ func (a *App) InitializeRoutes() {
 	router.HandleFunc("/category/{id}", a.DeleteCategory).Methods("DELETE")
 
 	//Article Category Routes
-	router.HandleFunc("article/category", a.CreateArticleCategory).Methods("POST")
-	router.HandleFunc("article/categories", a.GetArticleCategories).Methods("GET")
-	router.HandleFunc("article/category/{id}", a.GetArticleCategory).Methods("GET")
-	router.HandleFunc("article/category/{id}", a.UpdateArticleCategory).Methods("PUT")
-	router.HandleFunc("article/category/{id}", a.DeleteArticleCategory).Methods("DELETE")
+	router.HandleFunc("/article/category", a.CreateArticleCategory).Methods("POST")
+	router.HandleFunc("/article/categories", a.GetArticleCategories).Methods("GET")
+	router.HandleFunc("/article/category/{id}", a.GetArticleCategory).Methods("GET")
+	router.HandleFunc("/article/category/{id}", a.UpdateArticleCategory).Methods("PUT")
+	router.HandleFunc("/article/category/{id}", a.DeleteArticleCategory).Methods("DELETE")
 }

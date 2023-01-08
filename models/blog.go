@@ -18,7 +18,7 @@ type Article struct {
 
 type BlogCategory struct {
 	ID              string `json:"id"`
-	ArticleCategory string `json:"article_category"`
+	ArticleCategory []string `json:"article_category"`
 }
 
 func (b *Article) CreateArticle(db *sql.DB) error {
