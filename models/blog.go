@@ -6,13 +6,19 @@ import (
 )
 
 type Article struct {
-	ID          int       `json:"id"`
-	Title       string    `json:"title"`
-	Article     string    `json:"article"`
-	Image       string    `json:"image"`
-	CreatedDate time.Time `json:"created_date"`
-	UpdatedDate time.Time `json:"updated_date"`
+	ID              int          `json:"id"`
+	Title           string       `json:"title"`
+	Article         string       `json:"article"`
+	Image           string       `json:"image"`
+	CreatedDate     time.Time    `json:"created_date"`
+	UpdatedDate     time.Time    `json:"updated_date"`
+	ArticleCategory BlogCategory `json:"article_category"`
 	//Comment     []Comment   `json:"comment"`
+}
+
+type BlogCategory struct {
+	ID              string `json:"id"`
+	ArticleCategory []string `json:"article_category"`
 }
 
 func (b *Article) CreateArticle(db *sql.DB) error {
@@ -53,8 +59,9 @@ func (b *Article) GetArticles(db *sql.DB) ([]Article, error) {
 }
 
 func (b *Article) GetArticle(db *sql.DB, id int) error {
-	return db.QueryRow("SELECT * FROM Articles WHERE id=$1",
-		id).Scan(&b.ID, &b.Title, &b.Article, &b.Image, &b.CreatedDate, &b.UpdatedDate)
+	b.UpdatedDate = time.Now()
+
+	return db.QueryRow("SELECT * FROM Articles WHERE id=$1", id).Scan(&b.ID, &b.Title, &b.Article, &b.Image, &b.CreatedDate, &b.UpdatedDate)
 }
 
 func (b *Article) UpdateArticle(db *sql.DB) error {
