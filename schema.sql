@@ -21,12 +21,13 @@ CREATE TABLE products
 
 CREATE TABLE Articles
 (
-    id SERIAL,
+    id TEXT,
     title TEXT NOT NULL,
     image TEXT,
     article TEXT,
     created_date TIMESTAMP,
     updated_date TIMESTAMP,
+    categories JSONB,
     CONSTRAINT articles_pkey PRIMARY KEY (id)
 );
 
@@ -55,6 +56,6 @@ CREATE TABLE Categories
 CREATE TABLE Article_Categories
 (
     id TEXT,
-    article_category TEXT [],
+    article_category TEXT,
     CONSTRAINT article_category_pkey PRIMARY KEY (id)
 );

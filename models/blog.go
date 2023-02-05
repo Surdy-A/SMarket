@@ -2,11 +2,16 @@ package models
 
 import (
 	"database/sql"
+	"database/sql/driver"
+	"encoding/json"
+	"errors"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Article struct {
-	ID              int          `json:"id"`
+	ID              string       `json:"id"`
 	Title           string       `json:"title"`
 	Article         string       `json:"article"`
 	Image           string       `json:"image"`
@@ -18,17 +23,19 @@ type Article struct {
 
 type BlogCategory struct {
 	ID              string `json:"id"`
-	ArticleCategory []string `json:"article_category"`
+	ArticleCategory string `json:"category"`
 }
 
 func (b *Article) CreateArticle(db *sql.DB) error {
 	b.CreatedDate = time.Now()
 	b.UpdatedDate = time.Now()
+	article_id := (uuid.New()).String()
+	b.ID = article_id
 
 	err := db.QueryRow(
-		`INSERT INTO articles(title, article, image, created_date, updated_date) 
-		VALUES($1, $2, $3, $4, $5) RETURNING id`,
-		b.Title, b.Article, b.Image, b.CreatedDate, b.UpdatedDate).Scan(&b.ID)
+		`INSERT INTO articles(id, title, article, image, created_date, updated_date, categories) 
+		VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+		b.ID, b.Title, b.Article, b.Image, b.CreatedDate, b.UpdatedDate, b.ArticleCategory).Scan(&b.ID)
 
 	if err != nil {
 		return err
@@ -37,8 +44,7 @@ func (b *Article) CreateArticle(db *sql.DB) error {
 }
 
 func (b *Article) GetArticles(db *sql.DB) ([]Article, error) {
-	rows, err := db.Query(
-		`SELECT * FROM articles`)
+	rows, err := db.Query(`SELECT * FROM articles`)
 
 	if err != nil {
 		return nil, err
@@ -50,7 +56,7 @@ func (b *Article) GetArticles(db *sql.DB) ([]Article, error) {
 
 	for rows.Next() {
 		var b Article
-		if err := rows.Scan(&b.ID, &b.Title, &b.Article, &b.Image, &b.CreatedDate, &b.UpdatedDate); err != nil {
+		if err := rows.Scan(&b.ID, &b.Title, &b.Article, &b.Image, &b.CreatedDate, &b.UpdatedDate, &b.ArticleCategory); err != nil {
 			return nil, err
 		}
 		blogs = append(blogs, b)
@@ -58,10 +64,10 @@ func (b *Article) GetArticles(db *sql.DB) ([]Article, error) {
 	return blogs, nil
 }
 
-func (b *Article) GetArticle(db *sql.DB, id int) error {
+func (b *Article) GetArticle(db *sql.DB, id string) error {
 	b.UpdatedDate = time.Now()
 
-	return db.QueryRow("SELECT * FROM Articles WHERE id=$1", id).Scan(&b.ID, &b.Title, &b.Article, &b.Image, &b.CreatedDate, &b.UpdatedDate)
+	return db.QueryRow("SELECT * FROM Articles WHERE id=$1", id).Scan(&b.ID, &b.Title, &b.Article, &b.Image, &b.CreatedDate, &b.UpdatedDate, &b.ArticleCategory)
 }
 
 func (b *Article) UpdateArticle(db *sql.DB) error {
@@ -77,4 +83,17 @@ func (p *Article) DeleteArticle(db *sql.DB) error {
 	_, err := db.Exec("DELETE FROM articles WHERE id=$1", p.ID)
 
 	return err
+}
+
+func (bc BlogCategory) Value() (driver.Value, error) {
+	return json.Marshal(bc)
+}
+
+func (bc *BlogCategory) Scan(value interface{}) error {
+	_, ok := value.([]byte)
+	if !ok {
+		return errors.New("type assertion to []byte failed")
+	}
+
+	return json.Unmarshal(value.([]byte), &bc)
 }

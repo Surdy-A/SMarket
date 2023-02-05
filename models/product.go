@@ -31,9 +31,10 @@ type Product struct {
 }
 
 type Category struct {
-	ID           string `json:"id"`
+	ID string `json:"id"`
+	//Add Menu
 	MainCategory string `json:"main_category"`
-	SubCategory  string `json:"sub_category"`
+	SubCategory  string `json:"sub_category"` // Make subcategory ann array
 }
 
 func (p *Product) ProductDiscount(percent float64) *float64 {

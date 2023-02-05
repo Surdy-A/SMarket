@@ -177,6 +177,16 @@ func (a *App) CreateArticle(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
+	vars := mux.Vars(r)
+	product_category_id := vars["category_id"]
+
+	var ac models.BlogCategory
+	err := ac.GetArticleCategory(a.DB, product_category_id)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, "article category doesn't exist")
+		return
+	}
+
 	if err := b.CreateArticle(a.DB); err != nil {
 		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -198,11 +208,7 @@ func (a *App) GetArticles(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) GetArticle(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "Invalid Article ID")
-		return
-	}
+	id := vars["id"]
 
 	p := models.Article{ID: id}
 	if err := p.GetArticle(a.DB, id); err != nil {
@@ -220,11 +226,7 @@ func (a *App) GetArticle(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) UpdateArticle(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "Invalid Article ID")
-		return
-	}
+	id := vars["id"]
 
 	var ar models.Article
 	decoder := json.NewDecoder(r.Body)
@@ -234,6 +236,16 @@ func (a *App) UpdateArticle(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 	ar.ID = id
+
+	vars = mux.Vars(r)
+	product_category_id := vars["category_id"]
+
+	var ac models.BlogCategory
+	err := ac.GetArticleCategory(a.DB, product_category_id)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, "article category doesn't exist")
+		return
+	}
 
 	var article models.Article
 	if err := article.GetArticle(a.DB, id); err != nil {
@@ -251,11 +263,7 @@ func (a *App) UpdateArticle(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) DeleteArticle(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "Invalid Article ID")
-		return
-	}
+	id := vars["id"]
 
 	ar := models.Article{ID: id}
 	if err := ar.GetArticle(a.DB, id); err != nil {
