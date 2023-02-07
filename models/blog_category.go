@@ -35,6 +35,7 @@ func (b *BlogCategory) GetArticleCategories(db *sql.DB) ([]BlogCategory, error) 
 
 	for rows.Next() {
 		var b BlogCategory
+
 		if err := rows.Scan(&b.ID, &b.ArticleCategory); err != nil {
 			return nil, err
 		}
@@ -46,14 +47,11 @@ func (b *BlogCategory) GetArticleCategories(db *sql.DB) ([]BlogCategory, error) 
 }
 
 func (b *BlogCategory) GetArticleCategory(db *sql.DB, id string) error {
-	return db.QueryRow("SELECT * FROM article_categories WHERE id=$1",
-		id).Scan(&b.ID, &b.ArticleCategory)
+	return db.QueryRow("SELECT * FROM article_categories WHERE id=$1", id).Scan(&b.ID, &b.ArticleCategory)
 }
 
 func (b *BlogCategory) UpdateArticleCategory(db *sql.DB) error {
-	_, err :=
-		db.Exec(`UPDATE article_categories SET article_category=$1 WHERE id=$2`,
-			b.ArticleCategory, b.ID)
+	_, err := db.Exec(`UPDATE article_categories SET article_category=$1 WHERE id=$2`, b.ArticleCategory, b.ID)
 
 	return err
 }

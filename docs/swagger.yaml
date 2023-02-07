@@ -1,16 +1,311 @@
-basePath: /v2
-host: petstore.swagger.io
+schemes:
+  - http
+  - https
+swagger: '2.0'
 info:
-  contact:
-    email: support@swagger.io
-    name: API Support
-    url: http://www.swagger.io/support
-  description: This is a sample server Petstore server.
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: http://swagger.io/terms/
-  title: Swagger Example API
-  version: "1.0"
-paths: {}
-swagger: "2.0"
+  description: API documentation for SMarket using Golang and Postgre Database
+  title: SMarket API
+  contact: {}
+  version: '1.0'
+host: localhost:8010
+basePath: /api/v1
+paths:
+  /product/{category_id}/{vendor_id}:
+    post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Product
+      summary: Create product
+      parameters:
+        - description: Product data
+          name: product
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/datatransfers.ProductCreate'
+        - type: string
+          description: Product Category ID
+          name: category_id
+          in: path
+          required: true
+        - type: string
+          description: Vendor Category ID
+          name: vendor_id
+          in: path
+          required: true
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/datatransfers.Status'
+        '400':
+          description: Bad request
+          schema:
+            $ref: '#/definitions/datatransfers.Error'
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/datatransfers.Error'
+            
+    put:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Product
+      summary: Update product
+      parameters:
+        - description: Product data
+          name: product
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/datatransfers.ProductCreate'
+        - type: string
+          description: Product Category ID
+          name: category_id
+          in: path
+          required: true
+        - type: string
+          description: Vendor Category ID
+          name: vendor_id
+          in: path
+          required: true
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/datatransfers.Status'
+        '400':
+          description: Bad request
+          schema:
+            $ref: '#/definitions/datatransfers.Error'
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/datatransfers.Error'
+  
+  /product/{id}:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Product
+      summary: Get product by ID
+      parameters:
+        - type: string
+          description: Product ID
+          name: id
+          in: path
+          required: true
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/datatransfers.Data'
+        '400':
+          description: Bad request
+          schema:
+            $ref: '#/definitions/datatransfers.Error'
+        '404':
+          description: Not found
+          schema:
+            $ref: '#/definitions/datatransfers.Error'
+    
+    delete:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Product
+      summary: Delete product
+      parameters:
+        - type: string
+          description: Product ID
+          name: id
+          in: path
+          required: true
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/datatransfers.Status'
+        '400':
+          description: Bad request
+          schema:
+            $ref: '#/definitions/datatransfers.Error'
+        '404':
+          description: Not found
+          schema:
+            $ref: '#/definitions/datatransfers.Error'
+  /products:
+    get:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Product
+      summary: Get Products
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/datatransfers.Data'
+        '400':
+          description: Bad request
+          schema:
+            $ref: '#/definitions/datatransfers.Error'
+        '404':
+          description: Not found
+          schema:
+            $ref: '#/definitions/datatransfers.Error'
+definitions:
+  datatransfers.Data:
+    type: object
+    required:
+      - choices
+      - id
+      - name
+      - price
+      - image
+      - details
+      - sizes
+      - colors
+      - video_url
+      - availability
+      - start
+      - labels
+      - discount
+      - brands
+      - categories
+      - created_date
+      - updated_date
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      details:
+        type: string
+      sizes:
+        type: array
+        items:
+          type: string
+      colors:
+        type: array
+        items:
+          type: string
+      video_url:
+        type: string
+      availability:
+        type: string
+      star:
+        type: array
+        items:
+          type: number
+      labels:
+        type: array
+        items:
+          type: string
+      discount:
+        type: number
+      brands:
+        type: array
+        items:
+          type: string
+      categories:
+        type: object
+        properties:
+          id: {}
+          main_category: {}
+          sub_category: {}
+      created_date:
+        type: string
+        format: date-time
+      updated_date:
+        type: string
+        format: date-time
+  datatransfers.Error:
+    type: object
+    properties:
+      error: {}
+  datatransfers.ProductCreate:
+    type: object
+    required:
+      - choices
+      - id
+      - name
+      - price
+      - image
+      - details
+      - sizes
+      - colors
+      - video_url
+      - availability
+      - start
+      - labels
+      - discount
+      - brands
+      - categories
+      - created_date
+      - updated_date
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      details:
+        type: string
+      sizes:
+        type: array
+        items:
+          type: string
+      colors:
+        type: array
+        items:
+          type: string
+      video_url:
+        type: string
+      availability:
+        type: string
+      star:
+        type: array
+        items:
+          type: number
+      labels:
+        type: array
+        items:
+          type: string
+      discount:
+        type: number
+      brands:
+        type: array
+        items:
+          type: string
+      categories:
+        type: object
+        properties:
+          id: {}
+          main_category: {}
+          sub_category: {}
+      created_date:
+        type: string
+        format: date-time
+      updated_date:
+        type: string
+        format: date-time
+  datatransfers.Status:
+    type: object
+    properties:
+      status: {}
+
+ 
+

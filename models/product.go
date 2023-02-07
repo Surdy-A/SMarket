@@ -31,16 +31,17 @@ type Product struct {
 }
 
 type Category struct {
-	ID string `json:"id"`
-	//Add Menu
+	ID           string `json:"id"`
 	MainCategory string `json:"main_category"`
 	SubCategory  string `json:"sub_category"` // Make subcategory ann array
+	//Add Menu
 }
 
 func (p *Product) ProductDiscount(percent float64) *float64 {
 	percent = percent / 100
 	pprice := percent * p.Price
 	discountPrice := p.Price - pprice
+
 	return &discountPrice
 }
 
@@ -50,9 +51,10 @@ func (p *Product) CreateProduct(db *sql.DB) error {
 	p.ID = product_id
 	p.UpdatedDate = p.CreatedDate
 
-	err := db.QueryRow(
-		"INSERT INTO products(id, name, image, details, sizes, colours, video_url, availability, star, labels, discount, price, brands, categories, created_date, updated_date) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING id",
-		p.ID, p.Name, p.Image, p.Details, pq.Array(p.Sizes), pq.Array(p.Colours), p.VideoUrl, p.Availability, pq.Array(p.Star), pq.Array(p.Labels), p.ProductDiscount(p.Discount), p.Price, pq.Array(p.Brands), p.Categories, p.CreatedDate, p.UpdatedDate).Scan(&p.ID)
+	err := db.QueryRow("INSERT INTO products(id, name, image, details, sizes, colours, video_url, availability, star, labels, discount, price, brands, categories, created_date, updated_date) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING id",
+		p.ID, p.Name, p.Image, p.Details, pq.Array(p.Sizes), pq.Array(p.Colours), p.VideoUrl, p.Availability,
+		pq.Array(p.Star), pq.Array(p.Labels), p.ProductDiscount(p.Discount), p.Price, pq.Array(p.Brands),
+		p.Categories, p.CreatedDate, p.UpdatedDate).Scan(&p.ID)
 
 	if err != nil {
 		return err

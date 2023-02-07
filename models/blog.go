@@ -18,7 +18,7 @@ type Article struct {
 	CreatedDate     time.Time    `json:"created_date"`
 	UpdatedDate     time.Time    `json:"updated_date"`
 	ArticleCategory BlogCategory `json:"article_category"`
-	//Comment     []Comment   `json:"comment"`
+	//Comment     []Comment   `json:"comment"`  Add Comment
 }
 
 type BlogCategory struct {
@@ -40,11 +40,12 @@ func (b *Article) CreateArticle(db *sql.DB) error {
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
-func (b *Article) GetArticles(db *sql.DB) ([]Article, error) {
-	rows, err := db.Query(`SELECT * FROM articles`)
+func (p *Article) GetArticles(db *sql.DB) ([]Article, error) {
+	rows, err := db.Query(`SELECT id, title, article, image, created_date, updated_date FROM articles`)
 
 	if err != nil {
 		return nil, err
@@ -52,29 +53,30 @@ func (b *Article) GetArticles(db *sql.DB) ([]Article, error) {
 
 	defer rows.Close()
 
-	blogs := []Article{}
+	products := []Article{}
 
 	for rows.Next() {
-		var b Article
-		if err := rows.Scan(&b.ID, &b.Title, &b.Article, &b.Image, &b.CreatedDate, &b.UpdatedDate, &b.ArticleCategory); err != nil {
+		var p Article
+		if err := rows.Scan(&p.ID, &p.Title, &p.Article, &p.Image, &p.CreatedDate, &p.UpdatedDate); err != nil {
 			return nil, err
 		}
-		blogs = append(blogs, b)
+
+		products = append(products, p)
 	}
-	return blogs, nil
+
+	return products, nil
 }
 
 func (b *Article) GetArticle(db *sql.DB, id string) error {
 	b.UpdatedDate = time.Now()
 
-	return db.QueryRow("SELECT * FROM Articles WHERE id=$1", id).Scan(&b.ID, &b.Title, &b.Article, &b.Image, &b.CreatedDate, &b.UpdatedDate, &b.ArticleCategory)
+	return db.QueryRow("SELECT * FROM Articles WHERE id=$1", id).Scan(&b.ID, &b.Title, &b.Article,
+		&b.Image, &b.CreatedDate, &b.UpdatedDate, &b.ArticleCategory)
 }
 
 func (b *Article) UpdateArticle(db *sql.DB) error {
-	_, err :=
-		db.Exec(`UPDATE articles SET title=$1, article=$2, image=$3, created_date=$4, 
-			updated_date=$5 WHERE id=$6`,
-			&b.Title, &b.Article, &b.Image, &b.CreatedDate, &b.UpdatedDate, &b.ID)
+	_, err := db.Exec(`UPDATE articles SET title=$1, article=$2, image=$3, created_date=$4, 
+	updated_date=$5 WHERE id=$6`, &b.Title, &b.Article, &b.Image, &b.CreatedDate, &b.UpdatedDate, &b.ID)
 
 	return err
 }
@@ -89,11 +91,12 @@ func (bc BlogCategory) Value() (driver.Value, error) {
 	return json.Marshal(bc)
 }
 
-func (bc *BlogCategory) Scan(value interface{}) error {
-	_, ok := value.([]byte)
+func (a *BlogCategory) Scan(value interface{}) error {
+	b, ok := value.([]byte)
+
 	if !ok {
 		return errors.New("type assertion to []byte failed")
 	}
 
-	return json.Unmarshal(value.([]byte), &bc)
+	return json.Unmarshal(b, &a)
 }
