@@ -24,7 +24,7 @@ Here are some of the features:
 - Update Product
 - Delete Product
 - Authenticate Users
-- 
+
 ## Technology Used
 - Golang
 
