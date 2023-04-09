@@ -1,29 +1,56 @@
-# Golang Mux Demo
+<h1 align="center"> City Smile Realty Web Application </h1> <br>
 
-[![Build Status](https://tomfern.semaphoreci.com/badges/go-mux-api/branches/master.svg)](https://tomfern.semaphoreci.com/projects/go-mux-api)
 
-Read the complete post with the explanation here:
 
-https://semaphoreci.com/community/tutorials/building-and-testing-a-rest-api-in-go-with-gorilla-mux-and-postgresql
 
-## Run locally
+## Table of Contents
 
-- Start postgres
-- Prepare environment, fill DB parameters:
+- [Introduction](#introduction)
+- [Features](#features)
+- [Technology](#Technology-Used)
+- [Running](#Running-the-application)
+- [Layout](#Layout)
 
+
+
+
+## Introduction
+
+City Smile Realty: Is a Real Estate Market Place. You can Search millions of for-sale and rental listings.
+
+
+## Features
+Here are some of the features:
+- Add Property for rent and sale
+- Delete Property
+- Edit Property
+
+## Technology Used
+- Golang
+- Gonic Gin
+- CSS
+- Javascript
+- HTML
+
+## Running the App
+Perform the following steps to run the application:
+
+1- Clone the App
+
+```
+$ git clone https://github.com/Surdy-A/City-Smile-Realty.git
+``` 
+
+2- Setup the environment variables and database
 ``` bash
-$ source env-sample
+$ source .env
 ```
 
-- Build and run:
+3- Change directory into the City-Smile-Realty and run
 
-```bash
-$ export GO111MODULE=on
-$ export GOFLAGS=-mod=vendor
-$ go mod download
-$ go build -o go-mux-api.bin
-$ ./go-mux-api.bin
 ```
+$ go run main.go
+``` 
 
 Server is listening on localhost:8010
 
@@ -49,6 +76,6 @@ ok      _/home/tom/r/go-mux-api 0.034s
 
 ## License
 
-Copyright (c) 2021 Rendered Text
+Copyright (c) 2023 Rendered Text
 
 Distributed under the MIT License. See the file LICENSE.
