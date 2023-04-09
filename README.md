@@ -1,29 +1,53 @@
-# Golang Mux Demo
+<h1 align="center">SMarket E-Commerce API </h1> <br>
 
-[![Build Status](https://tomfern.semaphoreci.com/badges/go-mux-api/branches/master.svg)](https://tomfern.semaphoreci.com/projects/go-mux-api)
 
-Read the complete post with the explanation here:
 
-https://semaphoreci.com/community/tutorials/building-and-testing-a-rest-api-in-go-with-gorilla-mux-and-postgresql
 
-## Run locally
+## Table of Contents
 
-- Start postgres
-- Prepare environment, fill DB parameters:
+- [Introduction](#introduction)
+- [Features](#features)
+- [Technology](#Technology-Used)
+- [Running](#Running-the-application)
+- [Test](#Test)
 
+
+
+## Introduction
+
+SMarket: Is an E-Commerce REST API. It can be used to perform all CRUD operations on a product.
+
+
+## Features
+Here are some of the features:
+- Create Product
+- Get Product(s)
+- Update Product
+- Delete Product
+- Authenticate Users
+
+## Technology Used
+- Golang
+
+## Running the App
+Perform the following steps to run the application:
+
+1- Clone the App
+
+```
+$ git clone https://github.com/Surdy-A/SMarket.git
+``` 
+
+2- Setup the environment variables and database
 ``` bash
-$ source env-sample
+$ source .env
 ```
 
-- Build and run:
+3- Change directory into the SMarket and run
 
-```bash
-$ export GO111MODULE=on
-$ export GOFLAGS=-mod=vendor
-$ go mod download
-$ go build -o go-mux-api.bin
-$ ./go-mux-api.bin
 ```
+$ go run main.go
+``` 
 
 Server is listening on localhost:8010
 
@@ -49,6 +73,6 @@ ok      _/home/tom/r/go-mux-api 0.034s
 
 ## License
 
-Copyright (c) 2021 Rendered Text
+Copyright (c) 2023 Rendered Text
 
 Distributed under the MIT License. See the file LICENSE.
