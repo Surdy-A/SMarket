@@ -1,4 +1,4 @@
-<h1 align="center"> City Smile Realty Web Application </h1> <br>
+<h1 align="center">SMarket E-Commerce API </h1> <br>
 
 
 
@@ -9,28 +9,24 @@
 - [Features](#features)
 - [Technology](#Technology-Used)
 - [Running](#Running-the-application)
-- [Layout](#Layout)
-
 
 
 
 ## Introduction
 
-City Smile Realty: Is a Real Estate Market Place. You can Search millions of for-sale and rental listings.
+SMarket: Is an E-Commerce REST API. It can be used to perform all CRUD operations on a product.
 
 
 ## Features
 Here are some of the features:
-- Add Property for rent and sale
-- Delete Property
-- Edit Property
-
+- Create Product
+- Get Product(s)
+- Update Product
+- Delete Product
+- Authenticate Users
+- 
 ## Technology Used
 - Golang
-- Gonic Gin
-- CSS
-- Javascript
-- HTML
 
 ## Running the App
 Perform the following steps to run the application:
@@ -38,7 +34,7 @@ Perform the following steps to run the application:
 1- Clone the App
 
 ```
-$ git clone https://github.com/Surdy-A/City-Smile-Realty.git
+$ git clone https://github.com/Surdy-A/SMarket.git
 ``` 
 
 2- Setup the environment variables and database
@@ -46,7 +42,7 @@ $ git clone https://github.com/Surdy-A/City-Smile-Realty.git
 $ source .env
 ```
 
-3- Change directory into the City-Smile-Realty and run
+3- Change directory into the SMarket and run
 
 ```
 $ go run main.go
